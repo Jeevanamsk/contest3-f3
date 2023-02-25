@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <div class="container-fluid" id="header">
+        <h1>Teacher Portal</h1>
+        <label id="signup">Signup</label>
+        <label id="login">
+           Login </label>
+    </div>
+    <div>
+    <h3>Teachers Dashboard </h3>
+    <label ><span id="username-display">!</span></label><br>
+    <label ><span id="email-display"></span></label>
+    <form id="changePasswordForm">
+       <label id="heading">Change Password</label> 
+
+       <input id="oldpwd" type="password"  name="oldPassword" placeholder="Old Password"><br>  
+      <input id="newpwd" type="password" id="newPassword" name="newPassword" placeholder="New Password"><br>  
+      <input id="cfrmnewpwd" type="password" id="cfrmNewPassword" name="confirmNewPassword" placeholder="confirm New Password"><br>
+      
+      <input id="chgpassword" type="submit" value="Change">
+    </form>
+    <button id="logoutButton" onclick=logout()>Logout</button>
+</div>
+    <script>
+                // Get the currentUser from localStorage
+        let currentUser = JSON.parse(localStorage.getItem('currentUser'));
+
+        // Check if the user is logged in
+        if (currentUser) {
+        // Display the user's name 
+       document.getElementById('username-display').textContent = currentUser.name;
+        document.getElementById('email-display').textContent = currentUser.email;
+
+        // Attach event listeners to the password change and logout buttons
+        document.getElementById('chgpassword').addEventListener('click', changePassword);
+        document.getElementById('logoutButton').addEventListener('click', logout);
+        } 
+        else {
+
+        //  login page if the user is not logged in
+        window.location.href = 'login.html';
+        }
+
+        function changePassword() {
+        const oldPassword = document.getElementById('oldpwd').value;
+        const newPassword = document.getElementById('newpwd').value;
+        const confirmPassword = document.getElementById('cfrmnewpwd').value;
+        
+        // old password matches the current user's password
+        if (oldPassword !== currentUser.password) {
+            alert('Incorrect old password');
+            return;
+        }
+        
+        // Check if the new password and confirm password match
+        if (newPassword !== confirmPassword) {
+            alert('New password and confirm password do not match');
+            return;
+        }
+        
+        // Update the user's password in the users array
+        const users = JSON.parse(localStorage.getItem('users'));
+        const userIndex = users.findIndex(u => u.email === currentUser.email);
+        users[userIndex].password = newPassword;
+        
+        // Update the users array in localStorage
+        localStorage.setItem('users', JSON.stringify(users));
+        
+        // Update the currentUser object with the new password
+        currentUser.password = newPassword;
+        localStorage.setItem('currentUser', JSON.stringify(currentUser));
+        
+        alert('Password changed successfully');
+        }
+
+        function logout() {
+        // Remove 
+        localStorage.removeItem('currentUser');
+        
+        // login page
+        window.location.href = 'login.html';
+        }
+
+
+    </script>
+  </body>
+</html>
